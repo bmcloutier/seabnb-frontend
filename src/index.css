@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.map-container {
+  height: 600px;
+}
+
+body {
+  background: url("https://www.toptal.com/designers/subtlepatterns/uploads/stripes-light.png");
+}
