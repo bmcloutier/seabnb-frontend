@@ -24,7 +24,7 @@ This frontend was created with React.js using Tailwindcss for styling. Maps were
 Install React Router, Axios, MapboxGL, and Tailwindcss:
 
 ```bash
-nmp install --save react-router-dom
+npm install --save react-router-dom
 npm install --save axios
 npm install --save mapbox-gl
 npm install -D tailwindcss postcss autoprefixer
