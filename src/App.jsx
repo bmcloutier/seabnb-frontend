@@ -28,6 +28,7 @@ const router = createBrowserRouter([
       {
         path: "/plan",
         element: <PlannerPage />,
+        loader: () => axios.get("http://localhost:3000/ports.json").then((response) => response.data),
       },
       {
         path: "/login",

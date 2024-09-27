@@ -34,8 +34,6 @@ export function Header() {
             startCoords: [-73.9, 40.73],
             endCoords: [-9.1388, 38.707],
             startDate: todayString,
-            startCurrency: "USD",
-            endCurrency: "EUR",
           }}
         >
           Plan

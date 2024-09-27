@@ -1,40 +1,40 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useLocation, useNavigate, useLoaderData } from "react-router-dom";
 import { Planner } from "./Planner";
 
 export function PlannerPage() {
-  const location = useLocation();
   const navigate = useNavigate();
-  const [ports, setPorts] = useState([]);
+  const location = useLocation();
+  const ports = useLoaderData();
   const [vessels, setVessels] = useState([]);
+  const [startPortId, setStartPortId] = useState(location.state.startPort);
+  const [endPortId, setEndPortId] = useState(location.state.endPort);
   const [startPortCoords, setStartPortCoords] = useState(location.state.startCoords);
   const [endPortCoords, setEndPortCoords] = useState(location.state.endCoords);
-  const [startPortCurrency, setStartPortCurrency] = useState(location.state.startCurrency);
-  const [exchangeRate, setExchangeRate] = useState("");
+  const [startDate, setStartDate] = useState(location.state.startDate);
 
-  const handlePortIndex = () => {
-    axios.get("http://localhost:3000/ports.json").then((response) => {
-      setPorts(response.data);
-    });
-  };
-
-  const handleVesselIndex = (port_id) => {
-    axios.get("http://localhost:3000/vessels.json", { params: { port_id: port_id } }).then((response) => {
-      setVessels(response.data);
-    });
-  };
-
+  const coordinates = new Map();
+  ports.map((port) => coordinates.set(port.id.toString(), [parseFloat(port.longitude), parseFloat(port.latitude)]));
   const handleStartPortSelection = (port_id) => {
-    axios.get(`http://localhost:3000/ports/${port_id}.json`).then((response) => {
-      setStartPortCoords([parseFloat(response.data.longitude), parseFloat(response.data.latitude)]);
-      setStartPortCurrency(response.data.currency);
-    });
+    setStartPortCoords(coordinates.get(port_id));
+    setStartPortId(port_id);
   };
   const handleEndPortSelection = (port_id) => {
-    axios.get(`http://localhost:3000/ports/${port_id}.json`).then((response) => {
-      setEndPortCoords([parseFloat(response.data.longitude), parseFloat(response.data.latitude)]);
-    });
+    setEndPortCoords(coordinates.get(port_id));
+    setEndPortId(port_id);
+  };
+
+  const handleStartDateSelection = (date) => {
+    setStartDate(date);
+  };
+
+  const handleVesselIndex = (port_id, end_port_id) => {
+    axios
+      .get("http://localhost:3000/vessels.json", { params: { port_id: port_id, end_port_id: end_port_id } })
+      .then((response) => {
+        setVessels(response.data);
+      });
   };
 
   const handleCreateBooking = (vessel, start, end, startDate) => {
@@ -67,43 +67,22 @@ export function PlannerPage() {
       });
   };
 
-  const handleGetExchangeRate = () => {
-    let rates = {
-      USD: 1,
-      EUR: 0.9,
-      JMD: 157.18,
-      BRL: 5.5,
-      ISK: 136.98,
-      MAD: 9.74,
-      XOF: 598.97,
-      ZAR: 17.64,
-    };
-    setExchangeRate(rates[startPortCurrency]);
-    // axios
-    //   .get(`https://v6.exchangerate-api.com/v6/${import.meta.env.VITE_EXCHANGE_API_KEY}/pair/USD/${startPortCurrency}`)
-    //   .then((response) => {
-    //     setExchangeRate(response.data.conversion_rate);
-    //   });
-  };
-
-  useEffect(handlePortIndex, []);
-  useEffect(handleGetExchangeRate);
-
   return (
     <main>
       <Planner
         ports={ports}
         vessels={vessels}
-        onVesselIndex={handleVesselIndex}
-        onStartPortSelection={handleStartPortSelection}
-        onEndPortSelection={handleEndPortSelection}
+        startPortId={startPortId}
+        endPortId={endPortId}
         startPortCoords={startPortCoords}
         endPortCoords={endPortCoords}
+        startDate={startDate}
+        onStartPortSelection={handleStartPortSelection}
+        onEndPortSelection={handleEndPortSelection}
+        onStartDateSelection={handleStartDateSelection}
+        onVesselIndex={handleVesselIndex}
         onBook={handleCreateBooking}
         onBookUpdate={handleUpdateBooking}
-        onGetExchangeRate={handleGetExchangeRate}
-        startPortCurrency={startPortCurrency}
-        exchangeRate={exchangeRate}
       />
     </main>
   );

@@ -1,5 +1,4 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { RouteView } from "./RouteView";
 export function BookingsIndex({ onDestroy }) {
   const books = useLoaderData();
   return (
@@ -7,10 +6,7 @@ export function BookingsIndex({ onDestroy }) {
       {books.map((booking) => (
         <div key={booking.id} className="relative mb-32">
           <div className="border-2 border-slate-300 shadow-md bg-slate-50 w-96 p-1">
-            <RouteView
-              startPortCoords={[booking.port_start.longitude, booking.port_start.latitude]}
-              endPortCoords={[booking.port_end.longitude, booking.port_end.latitude]}
-            />
+            <img src={"http://localhost:3000" + booking.map_url} alt="" />
           </div>
           <div className="rounded text-blue-900 text-lg italic font-medium bg-slate-50/50 p-2 absolute top-4 left-4">
             <p className="font-semibold">
@@ -34,8 +30,6 @@ export function BookingsIndex({ onDestroy }) {
                 vessel: booking.vessel.id,
                 startDate: booking.start_date,
                 bookingId: booking.id,
-                startCurrency: booking.port_start.currency,
-                endCurrency: booking.port_end.currency,
               }}
             >
               View Plan

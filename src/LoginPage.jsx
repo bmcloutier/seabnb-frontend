@@ -8,7 +8,6 @@ if (jwt) {
 }
 
 export function LoginPage({ show, onClose }) {
-  console.log("ShowStatus: ", show);
   const [errors, setErrors] = useState([]);
 
   const handleSubmit = (event) => {
@@ -23,7 +22,6 @@ export function LoginPage({ show, onClose }) {
         localStorage.setItem("jwt", response.data.jwt);
         event.target.reset();
         onClose();
-        // window.location.href = "/"; // Change this to hide a modal, redirect to a specific page, etc.
       })
       .catch((error) => {
         console.log(error.response);
