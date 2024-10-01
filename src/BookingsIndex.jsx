@@ -1,5 +1,5 @@
 import { Link, useLoaderData } from "react-router-dom";
-export function BookingsIndex({ onDestroy }) {
+export function BookingsIndex({ onDestroy, onSetCookies }) {
   const books = useLoaderData();
   return (
     <div className="flex justify-items-center grid grid-cols-2 mt-10 mx-32">
@@ -22,15 +22,16 @@ export function BookingsIndex({ onDestroy }) {
             <Link
               className="rounded border shadow-md text-blue-900 bg-blue-100 border-blue-900 p-2 hover:bg-blue-200 mr-2"
               to="/plan"
-              state={{
-                startPort: booking.port_start.id,
-                endPort: booking.port_end.id,
-                startCoords: [booking.port_start.longitude, booking.port_start.latitude],
-                endCoords: [booking.port_end.longitude, booking.port_end.latitude],
-                vessel: booking.vessel.id,
-                startDate: booking.start_date,
-                bookingId: booking.id,
-              }}
+              onClick={() =>
+                onSetCookies(
+                  booking.port_start.id,
+                  booking.port_end.id,
+                  booking.start_date,
+                  [booking.port_start.longitude, booking.port_start.latitude],
+                  [booking.port_end.longitude, booking.port_end.latitude],
+                  booking.id
+                )
+              }
             >
               View Plan
             </Link>

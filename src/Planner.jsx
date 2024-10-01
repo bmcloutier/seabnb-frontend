@@ -1,9 +1,9 @@
 import { useRef, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { withCookies } from "react-cookie";
 import mapboxgl from "mapbox-gl";
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API_KEY;
 
-export function Planner({
+function Planner({
   ports,
   vessels,
   startPortId,
@@ -11,6 +11,7 @@ export function Planner({
   startPortCoords,
   endPortCoords,
   startDate,
+  cookies,
   onStartPortSelection,
   onEndPortSelection,
   onStartDateSelection,
@@ -18,7 +19,6 @@ export function Planner({
   onBook,
   onBookUpdate,
 }) {
-  const location = useLocation();
   const mapContainer = useRef(null);
   const map = useRef(null);
   const startMarker = useRef(null);
@@ -138,7 +138,7 @@ export function Planner({
       <div className="grid grid-cols-2 gap-4 mt-5">
         <div>
           <div ref={mapContainer} className="map-container rounded border-2 shadow-md border-slate-200" />
-          {/* <p className="text-sm italic mt-2 text-blue-900">Total Journey Distance: {vessels[0].distance} km</p> */}
+          <p className="text-sm italic mt-2 text-blue-900">Cookie: {cookies.get("end_coords")}</p>
         </div>
         <div>
           {vessels.map((vessel) => (
@@ -163,7 +163,7 @@ export function Planner({
                 </p>
                 <p className="justify-self-end">{vessel.duration} day journey</p>
                 <div className="flex justify-end mt-4">
-                  {location.state.bookingId === undefined ? (
+                  {cookies.get("book_id") === undefined ? (
                     <>
                       <button
                         className="rounded border text-blue-900 bg-blue-100 border-blue-900 p-2 hover:bg-blue-200"
@@ -178,7 +178,7 @@ export function Planner({
                       <button
                         className="rounded border text-blue-900 bg-blue-100 border-blue-900 p-2 hover:bg-blue-200"
                         onClick={() =>
-                          onBookUpdate(vessel.id, startPortId, endPortId, startDate, location.state.bookingId)
+                          onBookUpdate(vessel.id, startPortId, endPortId, startDate, cookies.get("book_id"))
                         }
                       >
                         Update to&nbsp;
@@ -195,3 +195,5 @@ export function Planner({
     </div>
   );
 }
+
+export default withCookies(Planner);

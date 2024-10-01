@@ -1,13 +1,14 @@
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import axios from "axios";
 
-import { Header } from "./Header";
+import Header from "./Header";
 import { HomePage } from "./HomePage";
 import { LoginPage } from "./LoginPage";
 import { SignupPage } from "./SignupPage";
-import { PlannerPage } from "./PlannerPage";
-import { BookingsPage } from "./BookingsPage";
+import PlannerPage from "./PlannerPage";
+import BookingsPage from "./BookingsPage";
 import { Footer } from "./Footer";
+import { useCookies } from "react-cookie";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,14 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const [cookies, setCookie] = useCookies([
+    "start_port",
+    "end_port",
+    "start_date",
+    "start_coords",
+    "end_coords",
+    "book_id",
+  ]);
   return <RouterProvider router={router} />;
 }
 
